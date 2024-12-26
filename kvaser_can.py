@@ -53,10 +53,9 @@ class Kvaser:
         frame = Frame(id_ = id, data = data, flags = msgFlag)
         try:
             self.ch.write(frame)
-            print(f"Send data id:{id}, data:{data}")
+            # print(f"Send data id:{id}, data:{data}")
         except canlib.exceptions.CanGeneralError as e:
             print(f"Error transmitting data: {e}")
-
     def __iter__(self):
         while True:
             try:
@@ -75,10 +74,11 @@ def split_data_into_chunks(data, chunk_size = 8):
 
     chunks = []
     total_chunks = (len(data) + chunk_size - 1)//chunk_size
-
+    chunks.append(bytearray(b'\xff\x00\xff\x00\xff\x00\xff\x00'))
     for i in range(total_chunks):
-        chunk = data[i * chunk_size:(i + 1) * chunk_size]
+        chunk = data[i * chunk_size:(i + 1) * chunk_size]  # 8바이트씩 자르기
         chunks.append(chunk)
+    chunks.append(bytearray(b'\x00\xff\x00\xff\x00\xff\x00\xff'))
 
     return chunks
         
