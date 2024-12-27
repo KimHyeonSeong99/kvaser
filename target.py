@@ -5,21 +5,21 @@ file_dir = 'Downloads'
 
 def receive_file():
     transmitter = Kvaser()
-    msg = transmitter.read(123)
+    msg = transmitter.read()
     try:
         if msg.data == bytearray(b'\xff\x00\xff\x00\xff\x00\xff\x00'):
             flag = 1
             print('receive the flag')
             file = bytearray()
             while(flag):
-                msg = transmitter.read(123)
+                msg = transmitter.read()
                 print(f"{msg.data}",end ='\r', flush=True)
                 if msg.data == bytearray(b'\x00\xff\x00\xff\x00\xff\x00\xff'):
                     flag = 0
                 else:
                     file.extend(msg.data)
             
-            SplitMessage = file.split(":",1)
+            SplitMessage = file.split(b":",1)
             file_name = SplitMessage[0].decode('utf-8')
             file_data = SplitMessage[1]
 
